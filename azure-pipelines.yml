@@ -1,4 +1,5 @@
 trigger:
+- release/*
 - master
 - develop
 - feature/*
