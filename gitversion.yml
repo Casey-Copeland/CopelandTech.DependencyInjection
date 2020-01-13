@@ -41,6 +41,7 @@ branches:
     source-branches: ['master', 'develop', 'feature', 'release']
   pull-request:
     mode: ContinuousDeployment
+    increment: Patch
     tag: 'pr'
 ignore:
   sha: []
