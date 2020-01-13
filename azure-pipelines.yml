@@ -1,8 +1,8 @@
 trigger:
-- release/*
 - master
 - develop
 - feature/*
+- release/*
 
 resources:
 - repo: self
