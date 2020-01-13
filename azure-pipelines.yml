@@ -1,4 +1,5 @@
 trigger:
+- release/*
 - master
 - develop
 - feature/*
@@ -16,6 +17,7 @@ steps:
 - task: GitVersion@5
   inputs:
     runtime: 'core'
+    configFilePath: 'gitversion.yml'
     preferBundledVersion: false
 - task: UseDotNet@2
   displayName: '.NET Core 3.1.x'

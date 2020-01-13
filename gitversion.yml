@@ -1,11 +1,46 @@
-mode: Mainline
-next-version: 0.4.0
+mode: ContinuousDeployment
+continuous-delivery-fallback-tag: ''
 branches:
-  develop:
-    tag: dev
-  feature:
-    tag: alpha
   master:
+    mode: ContinuousDeployment
+    tag: '-beta'
+    increment: Minor
+    track-merge-target: true
+    tracks-release-branches: true
+    is-release-branch: false
+    prevent-increment-of-merged-branch-version: false
+  develop:
+    mode: ContinuousDeployment
+    tag: '-dev'
+    increment: Inherit
+    track-merge-target: true
+    tracks-release-branches: true
+    is-release-branch: false
+    prevent-increment-of-merged-branch-version: true
+  release:
+    regex: release?[/]
+    mode: ContinuousDeployment
+    increment: Patch
     tag: ''
+    is-release-branch: true
+    prevent-increment-of-merged-branch-version: true
+  feature:
+    regex: feature?[/]
+    mode: ContinuousDeployment
+    increment: Inherit
+    tag: '-alpha'
+    is-release-branch: false
+    prevent-increment-of-merged-branch-version: true
+  bugfix:
+    regex: bugfix?[/]
+    mode: ContinuousDeployment
+    increment: Inherit
+    tag: '-bugfix'
+    is-release-branch: false
+    prevent-increment-of-merged-branch-version: true
+    source-branches: ['master', 'develop', 'feature', 'release']
+  pull-request:
+    mode: ContinuousDeployment
+    tag: '-pr'
 ignore:
   sha: []
