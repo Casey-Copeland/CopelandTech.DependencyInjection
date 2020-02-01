@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\CopelandTech.DependencyInjection.Interfaces\CopelandTech.DependencyInjection.Interfaces.csproj" />
     <ProjectReference Include="..\..\..\src\CopelandTech.DependencyInjection\CopelandTech.DependencyInjection.csproj" />
+    <ProjectReference Include="..\RandomCompanyName.TestServices\RandomCompanyName.TestServices.csproj" />
   </ItemGroup>
 
 </Project>
