@@ -44,7 +44,6 @@ branches:
     source-branches:
     - develop
     - master
-    - support
     - release
   feature:
     regex: feature?[/]
