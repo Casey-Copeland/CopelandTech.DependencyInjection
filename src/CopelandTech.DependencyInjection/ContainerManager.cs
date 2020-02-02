@@ -12,7 +12,7 @@ namespace CopelandTech.DependencyInjection
     {
         T GetInstance<T>() where T : class, IService;
         void RegisterService<TInterface, TImplementation>() where TInterface : class, IService where TImplementation : class, TInterface;
-        void AutoRegisterServices();
+        void AutoRegisterServices(string assemblyNamespace = null);
     }
 
     public class ContainerManager : IContainerManager
@@ -30,9 +30,10 @@ namespace CopelandTech.DependencyInjection
                 _container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle(); //TODO: Make sure this is right? Should this be moved into a method?
         }
 
-        public void AutoRegisterServices()
+        //TODO:Optimize this for performance
+        public void AutoRegisterServices(string assemblyNamespace = null)
         {
-            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name.Contains("CopelandTech")); //TODO: Figure out how to assign this name dynamically.
+            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name.Contains("CopelandTech") || (assemblyNamespace != null ? a.GetName().Name.Contains(assemblyNamespace) : false)); //TODO: Figure out how to assign this name dynamically.
 
             foreach (var file in Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "CopelandTech.*.dll")) //TODO: Figure out how to assign this name dynamically.
             {
@@ -42,7 +43,18 @@ namespace CopelandTech.DependencyInjection
                     Assembly.LoadFrom(file);
             }
 
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name.Contains("CopelandTech"))) //TODO: Figure out how to assign this name dynamically.
+            if(assemblyNamespace != null)
+            {
+                foreach (var file in Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), $"{assemblyNamespace}.*.dll")) //TODO: Figure out how to assign this name dynamically.
+                {
+                    var loadedAssembly = loadedAssemblies.SingleOrDefault(a => file.Contains(a.GetName().Name + ".dll"));
+
+                    if (loadedAssembly == null)
+                        Assembly.LoadFrom(file);
+                }
+            }
+
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name.Contains("CopelandTech") || (assemblyNamespace != null ? a.GetName().Name.Contains(assemblyNamespace) : false))) //TODO: Figure out how to assign this name dynamically.
             {
                 var types = assembly.GetExportedTypes().Where(t => t.IsClass && typeof(IService).IsAssignableFrom(t));
 

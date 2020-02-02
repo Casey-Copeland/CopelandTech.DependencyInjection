@@ -1,47 +1,94 @@
 mode: ContinuousDeployment
 continuous-delivery-fallback-tag: ''
+commit-message-incrementing: Enabled
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+no-bump-message: '\+semver:\s?(none|skip)'
 branches:
   master:
     mode: ContinuousDeployment
-    tag: 'beta'
+    tag: ''
+    increment: Patch
+    track-merge-target: false
+    source-branches:
+    - develop
+    - release
+    tracks-release-branches: true
+    is-release-branch: false
+    prevent-increment-of-merged-branch-version: false
+    is-mainline: true
+    pre-release-weight: 55000
+  develop:
+    mode: ContinuousDeployment
+    tag: 'alpha'
     increment: Minor
     track-merge-target: true
     tracks-release-branches: true
     is-release-branch: false
-    prevent-increment-of-merged-branch-version: false
-  develop:
-    mode: ContinuousDeployment
-    tag: 'dev'
-    increment: Inherit
-    track-merge-target: true
-    tracks-release-branches: true
-    is-release-branch: false
     prevent-increment-of-merged-branch-version: true
+    track-merge-target: true
+    source-branches: []
+    is-mainline: false
   release:
     regex: release?[/]
     mode: ContinuousDeployment
-    increment: Patch
-    tag: ''
+    increment: None
+    tag: 'beta'
     is-release-branch: true
+    is-mainline: false
     prevent-increment-of-merged-branch-version: true
+    pre-release-weight: 30000
+    tracks-release-branches: false
+    track-merge-target: false
+    source-branches:
+    - develop
+    - master
+    - support
+    - release
   feature:
     regex: feature?[/]
     mode: ContinuousDeployment
     increment: Inherit
-    tag: 'alpha'
+    tag: useBranchName
+    tracks-release-branches: false
     is-release-branch: false
-    prevent-increment-of-merged-branch-version: true
-  bugfix:
-    regex: bugfix?[/]
-    mode: ContinuousDeployment
-    increment: Inherit
-    tag: 'bugfix'
-    is-release-branch: false
-    prevent-increment-of-merged-branch-version: true
-    source-branches: ['master', 'develop', 'feature', 'release']
-  pull-request:
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    source-branches:
+    - develop
+    - master
+    - release
+    - feature
+    - support
+    - hotfix
+    is-mainline: false
+    pre-release-weight: 30000
+  hotfix:
+    regex: hotfix?[/]
     mode: ContinuousDeployment
     increment: Patch
+    tag: 'beta'
+    prevent-increment-of-merged-branch-version: true
+    source-branches:
+    - develop
+    - master
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: false
+    pre-release-weight: 30000
+  pull-request:
+    mode: ContinuousDeployment
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
     tag: 'pr'
+    track-merge-target: false
+    source-branches:
+    - develop
+    - master
+    - release
+    - feature
+    - support
+    - hotfix
 ignore:
   sha: []

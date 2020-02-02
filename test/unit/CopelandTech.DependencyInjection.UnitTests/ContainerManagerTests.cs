@@ -1,4 +1,5 @@
 using CopelandTech.DependencyInjection.Interfaces;
+using RandomCompanyName.TestServices;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 using Xunit;
@@ -44,6 +45,23 @@ namespace CopelandTech.DependencyInjection.UnitTests
             containerManager.AutoRegisterServices();
             var test = containerManager.GetInstance<ITransientTest>();
             Assert.IsAssignableFrom<ITransientService>(test);
+        }
+
+        [Fact]
+        public void ContainerRegistersOtherNamespaceSuccessfully()
+        {
+            var containerManager = new ContainerManager();
+            containerManager.AutoRegisterServices("RandomCompanyName");
+            var test = containerManager.GetInstance<IRandomWorkerService>();
+            Assert.IsAssignableFrom<ISingletonService>(test);
+        }
+
+        [Fact]
+        public void ContainerRegistersOtherNamespaceUnsuccessfully()
+        {
+            var containerManager = new ContainerManager();
+            containerManager.AutoRegisterServices("SomeOtherCompany");
+            Assert.Throws<ActivationException>(() => containerManager.GetInstance<IRandomWorkerService>());
         }
     }
 
